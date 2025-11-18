@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>教師追加</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+<div class="container">
+    <h2 class="title">教師の追加</h2>
+
+    <% if (error) { %>
+        <p class="error"><%= error %></p>
+    <% } %>
+
+    <form action="/teacher/add" method="POST">
+        <label>名前</label>
+        <input type="text" name="name" placeholder="例：山田 太郎" required>
+
+        <label>メールアドレス</label>
+        <input type="email" name="email" placeholder="example@mail.com" required>
+
+        <button type="submit">追加</button>
+    </form>
+
+    <a href="/teacher/dashboard" class="back">← ダッシュボードへ戻る</a>
+</div>
+
+</body>
+</html>
