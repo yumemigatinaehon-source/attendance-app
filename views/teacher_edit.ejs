@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>教師メール変更</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+<div class="container">
+    <h2 class="title">教師メールアドレス変更</h2>
+
+    <% if (error) { %>
+        <p class="error"><%= error %></p>
+    <% } %>
+
+    <form action="/teacher/edit" method="POST">
+        <label>教師を選択</label>
+        <select name="name" required>
+            <% teachers.forEach(t => { %>
+                <option value="<%= t.name %>"><%= t.name %></option>
+            <% }); %>
+        </select>
+
+        <label>新しいメールアドレス</label>
+        <input type="email" name="email" placeholder="newemail@mail.com" required>
+
+        <button type="submit">更新</button>
+    </form>
+
+    <a href="/teacher/dashboard" class="back">← ダッシュボードへ戻る</a>
+</div>
+
+</body>
+</html>
