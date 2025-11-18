@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>教師ログイン</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+<div class="container">
+    <h2 class="title">教師用ログイン</h2>
+
+    <% if (error) { %>
+        <p class="error"><%= error %></p>
+    <% } %>
+
+    <form action="/teacher/login" method="POST">
+        <label>パスワード</label>
+        <input type="password" name="password" placeholder="パスワードを入力" required>
+
+        <button type="submit">ログイン</button>
+    </form>
+
+    <a href="/" class="back">← 生徒ページへ戻る</a>
+</div>
+
+</body>
+</html>
