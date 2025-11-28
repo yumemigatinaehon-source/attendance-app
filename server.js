@@ -1,123 +1,200 @@
-const express = require("express");
-const fs = require("fs");
-const path = require("path");
-const bodyParser = require("body-parser");
+// ===============================
+// 出席システム（login_id 方式 / メールなし）
+// ===============================
+
+import express from "express";
+import fs from "fs";
+import path from "path";
+import session from "express-session";
+import bcrypt from "bcrypt";
+import bodyParser from "body-parser";
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const __dirname = path.resolve();
 
-// Middleware
+// -------------------------------
+// 設定
+// -------------------------------
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(express.static("public"));
+app.use(express.static(path.join(__dirname, "public")));
+
 app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views"));
 
-// ====== データファイル ======
-const TEACHER_FILE = path.join(__dirname, "data/teachers.json");
-const ATTEND_FILE = path.join(__dirname, "data/attendance.csv");
+app.use(
+    session({
+        secret: "secret-key",
+        resave: false,
+        saveUninitialized: false,
+        cookie: { maxAge: 24 * 60 * 60 * 1000 }
+    })
+);
 
-// 出席CSVがない場合ヘッダー追加
-if (!fs.existsSync(ATTEND_FILE)) {
-    fs.writeFileSync(ATTEND_FILE,
-        "timestamp,studentId,name,date,status,teacher,class1,class2,class3,class4,reason\n"
-    );
+// -------------------------------
+// ユーティリティ
+// -------------------------------
+const TEACHER_FILE = "./data/teachers.json";
+const CSV_FILE = "./data/attendance.csv";
+
+function loadTeachers() {
+    return JSON.parse(fs.readFileSync(TEACHER_FILE, "utf8"));
 }
 
-// ====== ルート ======
+function saveTeachers(data) {
+    fs.writeFileSync(TEACHER_FILE, JSON.stringify(data, null, 2));
+}
 
-// 生徒フォーム
+function appendCSV(line) {
+    fs.appendFileSync(CSV_FILE, line + "\n");
+}
+
+// -------------------------------
+// 生徒ページ（誰でもアクセス可能）
+// -------------------------------
 app.get("/", (req, res) => {
-    const teachers = JSON.parse(fs.readFileSync(TEACHER_FILE, "utf8"));
-
-    res.render("index", {
-        teachers: teachers
-    });
+    const teachers = loadTeachers();
+    res.render("index", { teachers });
 });
 
-// 出席送信
+// 生徒の送信処理
 app.post("/submit", (req, res) => {
-    const data = req.body;
+    const { name, studentId, date, status, reason, t1, t2, t3, t4, teacher } = req.body;
 
-    const row = [
-        new Date().toISOString(),
-        data.studentId,
-        data.name,
-        data.date,
-        data.status,
-        data.teacher,
-        data.class1,
-        data.class2,
-        data.class3,
-        data.class4,
-        JSON.stringify(data.reason || "")
-    ].join(",") + "\n";
+    const now = new Date().toISOString();
 
-    fs.appendFileSync(ATTEND_FILE, row);
+    const line = [
+        now,
+        studentId,
+        name,
+        date,
+        status,
+        reason.replace(/\n/g, " "),
+        teacher,
+        t1,
+        t2,
+        t3,
+        t4
+    ].join(",");
 
-    res.json({ message: "出席情報を送信しました！" });
+    appendCSV(line);
+
+    res.json({ message: "送信しました！" });
 });
 
-// ====== 教師管理画面 ======
-
-app.get("/teacher", (req, res) => {
-    res.render("teacher_login");
+// -------------------------------
+// 教師ログイン
+// -------------------------------
+app.get("/teacher/login", (req, res) => {
+    res.render("teacher_login", { error: null });
 });
 
 app.post("/teacher/login", (req, res) => {
-    const { email } = req.body;
-    const teachers = JSON.parse(fs.readFileSync(TEACHER_FILE));
+    const { login_id, password } = req.body;
 
-    const t = teachers.find(x => x.email === email);
+    const teachers = loadTeachers();
+    const teacher = teachers.find(t => t.login_id === login_id);
 
-    if (!t) return res.render("teacher_login", { error: "メールが違います" });
+    if (!teacher) {
+        return res.render("teacher_login", { error: "ログインIDが違います" });
+    }
 
-    res.redirect("/teacher/dashboard");
+    bcrypt.compare(password, teacher.password, (err, ok) => {
+        if (!ok) {
+            return res.render("teacher_login", { error: "パスワードが違います" });
+        }
+
+        req.session.teacher = teacher;
+        res.redirect("/teacher/dashboard");
+    });
 });
 
-app.get("/teacher/dashboard", (req, res) => {
-    const teachers = JSON.parse(fs.readFileSync(TEACHER_FILE));
-    res.render("teacher_dashboard", { teachers });
+// -------------------------------
+// 教師ダッシュボード
+// -------------------------------
+function requireLogin(req, res, next) {
+    if (!req.session.teacher) return res.redirect("/teacher/login");
+    next();
+}
+
+app.get("/teacher/dashboard", requireLogin, (req, res) => {
+    res.render("teacher_dashboard", { teacher: req.session.teacher });
 });
 
+// -------------------------------
 // 教師追加
-app.get("/teacher/add", (req, res) => res.render("teacher_add"));
+// -------------------------------
+app.get("/teacher/add", requireLogin, (req, res) => {
+    res.render("teacher_add", { error: null });
+});
 
-app.post("/teacher/add", (req, res) => {
-    const { name, email } = req.body;
-    const teachers = JSON.parse(fs.readFileSync(TEACHER_FILE));
+app.post("/teacher/add", requireLogin, async (req, res) => {
+    const { login_id, name, password } = req.body;
 
-    teachers.push({ name, email });
-    fs.writeFileSync(TEACHER_FILE, JSON.stringify(teachers, null, 2));
+    const teachers = loadTeachers();
+
+    if (teachers.find(t => t.login_id === login_id)) {
+        return res.render("teacher_add", { error: "ログインIDが既に存在します" });
+    }
+
+    const hashed = await bcrypt.hash(password, 10);
+
+    teachers.push({
+        id: Date.now(),
+        login_id,
+        name,
+        password: hashed
+    });
+
+    saveTeachers(teachers);
 
     res.redirect("/teacher/dashboard");
 });
 
-// メール変更
-app.get("/teacher/edit", (req, res) => res.render("teacher_edit"));
+// -------------------------------
+// 教師編集（パスワード変更）
+// -------------------------------
+app.get("/teacher/edit/:id", requireLogin, (req, res) => {
+    const teachers = loadTeachers();
+    const teacher = teachers.find(t => t.id == req.params.id);
 
-app.post("/teacher/edit", (req, res) => {
-    const { oldEmail, newEmail } = req.body;
-    const teachers = JSON.parse(fs.readFileSync(TEACHER_FILE));
+    res.render("teacher_edit", { teacher, error: null });
+});
 
-    const t = teachers.find(x => x.email === oldEmail);
-    if (t) t.email = newEmail;
+app.post("/teacher/edit/:id", requireLogin, async (req, res) => {
+    const { password } = req.body;
 
-    fs.writeFileSync(TEACHER_FILE, JSON.stringify(teachers, null, 2));
+    const teachers = loadTeachers();
+    const teacher = teachers.find(t => t.id == req.params.id);
+
+    teacher.password = await bcrypt.hash(password, 10);
+
+    saveTeachers(teachers);
     res.redirect("/teacher/dashboard");
 });
 
+// -------------------------------
 // 教師削除
-app.get("/teacher/delete", (req, res) => res.render("teacher_delete"));
+// -------------------------------
+app.get("/teacher/delete/:id", requireLogin, (req, res) => {
+    const teachers = loadTeachers();
+    const teacher = teachers.find(t => t.id == req.params.id);
 
-app.post("/teacher/delete", (req, res) => {
-    const { email } = req.body;
-    let teachers = JSON.parse(fs.readFileSync(TEACHER_FILE));
+    res.render("teacher_delete", { teacher });
+});
 
-    teachers = teachers.filter(t => t.email !== email);
+app.post("/teacher/delete/:id", requireLogin, (req, res) => {
+    let teachers = loadTeachers();
+    teachers = teachers.filter(t => t.id != req.params.id);
+    saveTeachers(teachers);
 
-    fs.writeFileSync(TEACHER_FILE, JSON.stringify(teachers, null, 2));
     res.redirect("/teacher/dashboard");
 });
 
-// ====== サーバ起動 ======
-app.listen(PORT, () => console.log("Server running on " + PORT));
+// -------------------------------
+// サーバー起動
+// -------------------------------
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log("Server running on port " + PORT);
+});
