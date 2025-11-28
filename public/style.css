@@ -1,145 +1,25 @@
-/* -----------------------------
-   リセット & ベース
------------------------------ */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Helvetica', 'Arial', sans-serif;
-}
-
 body {
-    background-color: #f0f2f5;
-    color: #333;
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    font-family: Arial;
+    background: #f2f2f2;
 }
 
-/* -----------------------------
-   コンテナ
------------------------------ */
 .container {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 12px;
     width: 90%;
-    max-width: 480px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    max-width: 600px;
+    margin: 20px auto;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
 }
 
-.title {
-    font-size: 1.6rem;
-    margin-bottom: 20px;
-    text-align: center;
-}
-
-/* -----------------------------
-   フォーム
------------------------------ */
-form {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-input, select, button {
-    padding: 10px;
-    font-size: 1rem;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-}
-
-button {
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    cursor: pointer;
-    transition: 0.2s;
-}
-
-button:hover {
-    background-color: #45a049;
-}
-
-button.danger {
-    background-color: #f44336;
-}
-
-button.danger:hover {
-    background-color: #d32f2f;
-}
-
-/* -----------------------------
-   エラー & メッセージ
------------------------------ */
-.error {
-    color: #f44336;
-    font-size: 0.9rem;
-    margin-bottom: 10px;
-}
-
-#resultMsg {
+label {
     margin-top: 10px;
-    font-size: 1rem;
-    color: #2196F3;
-}
-
-/* -----------------------------
-   リンク
------------------------------ */
-.back {
     display: block;
-    margin-top: 15px;
-    text-decoration: none;
-    color: #555;
-    font-size: 0.9rem;
-    text-align: center;
+    font-weight: bold;
 }
 
-.back:hover {
-    color: #000;
-}
-
-/* -----------------------------
-   メニュー
------------------------------ */
-.menu {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.menu-btn {
-    text-decoration: none;
-    display: block;
-    padding: 12px;
-    background-color: #1976D2;
-    color: #fff;
-    border-radius: 8px;
-    text-align: center;
-}
-
-.menu-btn:hover {
-    background-color: #1565C0;
-}
-
-/* -----------------------------
-   レスポンシブ
------------------------------ */
-@media screen and (max-width: 480px) {
-    .container {
-        width: 95%;
-        padding: 15px;
-    }
-
-    input, select, button {
-        font-size: 1rem;
-        padding: 8px;
-    }
-
-    .title {
-        font-size: 1.4rem;
-    }
+input, select, textarea {
+    width: 100%;
+    padding: 8px;
+    margin-top: 4px;
 }
