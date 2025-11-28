@@ -2,41 +2,30 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>教師用ダッシュボード</title>
+    <title>教師ダッシュボード</title>
     <link rel="stylesheet" href="/style.css">
 </head>
 <body>
 
+<%- include("partials/header") %>
+
 <div class="container">
-    <h2 class="title">教師用メニュー</h2>
+    <h2>教師ダッシュボード</h2>
 
-    <div class="menu">
+    <h3>教師一覧</h3>
+    <ul>
+        <% teachers.forEach(t => { %>
+            <li><%= t.name %>（<%= t.email %>）</li>
+        <% }) %>
+    </ul>
 
-        <a class="menu-btn" href="/teacher/add">
-            教師の追加
-        </a>
-
-        <a class="menu-btn" href="/teacher/edit">
-            教師の連絡先（メール）変更
-        </a>
-
-        <a class="menu-btn" href="/teacher/delete">
-            教師の削除
-        </a>
-
-        <a class="menu-btn" href="/teacher/logs">
-            欠席・遅刻者の連絡一覧
-        </a>
-
-        <a class="menu-btn" href="/data/attendance.csv" download>
-            CSVダウンロード
-        </a>
-
-        <a class="back" href="/">← 生徒ページへ</a>
-    </div>
+    <a href="/teacher/add" class="btn">教師を追加</a><br>
+    <a href="/teacher/edit" class="btn">メール変更</a><br>
+    <a href="/teacher/delete" class="btn">教師を削除</a><br>
 
 </div>
+
+<%- include("partials/footer") %>
 
 </body>
 </html>
