@@ -1,18 +1,4 @@
 [
-  {
-    "name": "田中 一郎",
-    "email": "tanaka@example.com"
-  },
-  {
-    "name": "佐藤 二郎",
-    "email": "sato@example.com"
-  },
-  {
-    "name": "鈴木 三郎",
-    "email": "suzuki@example.com"
-  },
-  {
-    "name": "不明",
-    "email": ""
-  }
+    { "name": "田中先生", "email": "tanaka@example.com" },
+    { "name": "佐藤先生", "email": "sato@example.com" }
 ]
