@@ -6,23 +6,16 @@
     <link rel="stylesheet" href="/style.css">
 </head>
 <body>
-
-<%- include("partials/header") %>
-
 <div class="container">
+    <h2><%= teacher.name %> を削除</h2>
 
-    <h2>教師削除</h2>
+    <p>本当に削除しますか？</p>
 
-    <form action="/teacher/delete" method="POST">
-        <label>削除したい教師のメール</label>
-        <input type="email" name="email" required>
-
-        <button type="submit">削除する</button>
+    <form action="/teacher/delete/<%= teacher.id %>" method="POST">
+        <button type="submit">削除</button>
     </form>
 
+    <p><a href="/teacher/dashboard">キャンセル</a></p>
 </div>
-
-<%- include("partials/footer") %>
-
 </body>
 </html>
