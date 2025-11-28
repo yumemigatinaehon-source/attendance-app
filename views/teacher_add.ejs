@@ -6,25 +6,27 @@
     <link rel="stylesheet" href="/style.css">
 </head>
 <body>
-
-<%- include("partials/header") %>
-
 <div class="container">
-
     <h2>教師追加</h2>
 
     <form action="/teacher/add" method="POST">
+        <label>ログインID</label>
+        <input type="text" name="login_id" required>
+
         <label>名前</label>
         <input type="text" name="name" required>
 
-        <label>メール</label>
-        <input type="email" name="email" required>
+        <label>初期パスワード</label>
+        <input type="text" name="password" required>
 
         <button type="submit">追加</button>
     </form>
 
-</div>
+    <% if (error) { %>
+        <p class="error"><%= error %></p>
+    <% } %>
 
-<%- include("partials/footer") %>
+    <p><a href="/teacher/dashboard">ダッシュボードに戻る</a></p>
+</div>
 </body>
 </html>
