@@ -2,30 +2,25 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>教師メール変更</title>
+    <title>教師パスワード変更</title>
     <link rel="stylesheet" href="/style.css">
 </head>
 <body>
-
-<%- include("partials/header") %>
-
 <div class="container">
+    <h2><%= teacher.name %> のパスワード変更</h2>
 
-    <h2>教師メール変更</h2>
-
-    <form action="/teacher/edit" method="POST">
-        <label>現在のメール</label>
-        <input type="email" name="oldEmail" required>
-
-        <label>新しいメール</label>
-        <input type="email" name="newEmail" required>
+    <form action="/teacher/edit/<%= teacher.id %>" method="POST">
+        <label>新しいパスワード</label>
+        <input type="text" name="password" required>
 
         <button type="submit">変更</button>
     </form>
 
+    <% if (error) { %>
+        <p class="error"><%= error %></p>
+    <% } %>
+
+    <p><a href="/teacher/dashboard">ダッシュボードに戻る</a></p>
 </div>
-
-<%- include("partials/footer") %>
-
 </body>
 </html>
