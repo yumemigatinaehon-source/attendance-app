@@ -2,32 +2,27 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>教師削除</title>
     <link rel="stylesheet" href="/style.css">
 </head>
 <body>
 
-<div class="container">
-    <h2 class="title">教師の削除</h2>
+<%- include("partials/header") %>
 
-    <% if (error) { %>
-        <p class="error"><%= error %></p>
-    <% } %>
+<div class="container">
+
+    <h2>教師削除</h2>
 
     <form action="/teacher/delete" method="POST">
-        <label>削除する教師を選択</label>
-        <select name="name" required>
-            <% teachers.forEach(t => { %>
-                <option value="<%= t.name %>"><%= t.name %></option>
-            <% }); %>
-        </select>
+        <label>削除したい教師のメール</label>
+        <input type="email" name="email" required>
 
-        <button type="submit" class="danger">削除</button>
+        <button type="submit">削除する</button>
     </form>
 
-    <a href="/teacher/dashboard" class="back">← ダッシュボードへ戻る</a>
 </div>
+
+<%- include("partials/footer") %>
 
 </body>
 </html>
