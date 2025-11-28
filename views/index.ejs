@@ -2,87 +2,77 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>出席入力</title>
+    <title>出席入力フォーム</title>
     <link rel="stylesheet" href="/style.css">
 </head>
 <body>
 
 <div class="container">
-    <h2 class="title">出席フォーム</h2>
 
-    <form id="attendanceForm">
+    <h2>出席入力フォーム</h2>
+
+    <form id="form">
+
         <label>名前</label>
-        <input type="text" id="studentName" placeholder="山田 太郎" required>
+        <input type="text" id="name" required>
 
         <label>学籍番号</label>
-        <input type="text" id="studentId" placeholder="A1234567" required>
+        <input type="text" id="studentId" required>
+
+        <label>日付</label>
+        <input type="date" id="date" required>
+
+        <label>状態</label>
+        <select id="status">
+            <option value="欠席">欠席</option>
+            <option value="遅刻">遅刻</option>
+        </select>
+
+        <label>担任の先生</label>
+        <select id="teacher">
+            <% teachers.forEach(t => { %>
+                <option value="<%= t.name %>"><%= t.name %></option>
+            <% }) %>
+        </select>
+
+        <label>1限の先生</label>
+        <select id="class1">
+            <% teachers.forEach(t => { %>
+                <option value="<%= t.name %>"><%= t.name %></option>
+            <% }) %>
+        </select>
+
+        <label>2限の先生</label>
+        <select id="class2">
+            <% teachers.forEach(t => { %>
+                <option value="<%= t.name %>"><%= t.name %></option>
+            <% }) %>
+        </select>
+
+        <label>3限の先生</label>
+        <select id="class3">
+            <% teachers.forEach(t => { %>
+                <option value="<%= t.name %>"><%= t.name %></option>
+            <% }) %>
+        </select>
+
+        <label>4限の先生</label>
+        <select id="class4">
+            <% teachers.forEach(t => { %>
+                <option value="<%= t.name %>"><%= t.name %></option>
+            <% }) %>
+        </select>
+
+        <label>理由（任意）</label>
+        <textarea id="reason"></textarea>
 
         <button type="submit">送信</button>
     </form>
 
-    <p id="resultMsg"></p>
+    <p id="msg"></p>
+
 </div>
 
-<script>
-    // -------------------------
-    // Cookie読み込み
-    // -------------------------
-    window.onload = () => {
-        const name = getCookie("studentName");
-        const id = getCookie("studentId");
-
-        if (name) document.getElementById("studentName").value = name;
-        if (id) document.getElementById("studentId").value = id;
-    };
-
-    // -------------------------
-    // Cookie取得
-    // -------------------------
-    function getCookie(key) {
-        const match = document.cookie.match(new RegExp(key + "=([^;]+)"));
-        return match ? match[1] : "";
-    }
-
-    // -------------------------
-    // Cookie保存(30日)
-    // -------------------------
-    function setCookie(key, value) {
-        const days = 30;
-        const expires = new Date(Date.now() + days * 86400 * 1000).toUTCString();
-        document.cookie = `${key}=${value}; expires=${expires}; path=/`;
-    }
-
-    // -------------------------
-    // フォーム送信
-    // -------------------------
-    document.getElementById("attendanceForm").addEventListener("submit", async (e) => {
-        e.preventDefault();
-
-        const name = document.getElementById("studentName").value.trim();
-        const id = document.getElementById("studentId").value.trim();
-
-        if (!name || !id) {
-            alert("名前と学籍番号を入力してください");
-            return;
-        }
-
-        // Cookie保存
-        setCookie("studentName", name);
-        setCookie("studentId", id);
-
-        const payload = { name, studentId: id };
-
-        const res = await fetch("/submit", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload)
-        });
-
-        const data = await res.json();
-        document.getElementById("resultMsg").innerText = data.message;
-    });
-</script>
-
+<script src="/script.js"></script>
 </body>
 </html>
