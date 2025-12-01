@@ -1,111 +1,137 @@
-const express = require("express");
-const bcrypt = require("bcrypt");
-const session = require("express-session");
-const fs = require("fs");
-const path = require("path");
+// ===============================
+// 出席システム（login_id方式 / パスワードなし）
+// ===============================
+
+import express from "express";
+import fs from "fs";
+import path from "path";
+import session from "express-session";
+import bodyParser from "body-parser";
 
 const app = express();
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
+const __dirname = path.resolve();
 
-app.use(express.static("public"));
+// -------------------------------
+// 設定
+// -------------------------------
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+app.use(express.static(path.join(__dirname, "public")));
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
 app.use(
     session({
-        secret: "secret_key",
+        secret: "secret-key",
         resave: false,
         saveUninitialized: false,
+        cookie: { maxAge: 24 * 60 * 60 * 1000 }
     })
 );
 
-// ========================
-// JSON 読み書き
-// ========================
-
-const TEACHERS_FILE = path.join(__dirname, "teachers.json");
+// -------------------------------
+// ユーティリティ
+// -------------------------------
+const TEACHER_FILE = "./data/teachers.json";
+const CSV_FILE = "./data/attendance.csv";
 
 function loadTeachers() {
-    if (!fs.existsSync(TEACHERS_FILE)) return [];
-    return JSON.parse(fs.readFileSync(TEACHERS_FILE));
+    return JSON.parse(fs.readFileSync(TEACHER_FILE, "utf8"));
 }
 
 function saveTeachers(data) {
-    fs.writeFileSync(TEACHERS_FILE, JSON.stringify(data, null, 2));
+    fs.writeFileSync(TEACHER_FILE, JSON.stringify(data, null, 2));
 }
 
-// ========================
-// ログイン保護
-// ========================
-
-function requireLogin(req, res, next) {
-    if (!req.session.teacher) {
-        return res.redirect("/teacher/login");
-    }
-    next();
+function appendCSV(line) {
+    fs.appendFileSync(CSV_FILE, line + "\n");
 }
 
-// ========================
-// ルーティング
-// ========================
+// -------------------------------
+// 生徒ページ
+// -------------------------------
+app.get("/", (req, res) => {
+    const teachers = loadTeachers();
+    res.render("index", { teachers });
+});
 
-// ログイン画面
+app.post("/submit", (req, res) => {
+    const { name, studentId, date, status, reason, teacher } = req.body;
+
+    const now = new Date().toISOString();
+
+    const line = [
+        now,
+        studentId,
+        name,
+        date,
+        status,
+        reason.replace(/\n/g, " "),
+        teacher
+    ].join(",");
+
+    appendCSV(line);
+
+    res.json({ message: "送信しました！" });
+});
+
+// -------------------------------
+// 教師ログイン（IDのみ）
+// -------------------------------
 app.get("/teacher/login", (req, res) => {
     res.render("teacher_login", { error: null });
 });
 
-// ログイン処理
-app.post("/teacher/login", async (req, res) => {
-    const { login_id, password } = req.body;
+app.post("/teacher/login", (req, res) => {
+    const { login_id } = req.body;
 
     const teachers = loadTeachers();
-    const teacher = teachers.find((t) => t.login_id === login_id);
+    const teacher = teachers.find(t => t.login_id === login_id);
 
     if (!teacher) {
-        return res.render("teacher_login", { error: "ID またはパスワードが違います" });
-    }
-
-    const ok = await bcrypt.compare(password, teacher.password);
-    if (!ok) {
-        return res.render("teacher_login", { error: "ID またはパスワードが違います" });
+        return res.render("teacher_login", { error: "ログインIDが違います" });
     }
 
     req.session.teacher = teacher;
     res.redirect("/teacher/dashboard");
 });
 
+// -------------------------------
+// ログイン制限
+// -------------------------------
+function requireLogin(req, res, next) {
+    if (!req.session.teacher) return res.redirect("/teacher/login");
+    next();
+}
+
+// -------------------------------
 // ダッシュボード
+// -------------------------------
 app.get("/teacher/dashboard", requireLogin, (req, res) => {
-    const teachers = loadTeachers();
-    res.render("teacher_dashboard", {
-        teacher: req.session.teacher,
-        teachers,
-    });
+    res.render("teacher_dashboard", { teacher: req.session.teacher });
 });
 
-// 教師追加画面
+// -------------------------------
+// 教師追加
+// -------------------------------
 app.get("/teacher/add", requireLogin, (req, res) => {
     res.render("teacher_add", { error: null });
 });
 
-// 教師追加処理
-app.post("/teacher/add", async (req, res) => {
-    const { login_id, name, password } = req.body;
+app.post("/teacher/add", requireLogin, (req, res) => {
+    const { login_id, name } = req.body;
 
     const teachers = loadTeachers();
-    if (teachers.find((t) => t.login_id === login_id)) {
-        return res.render("teacher_add", { error: "この ID はすでに存在します" });
-    }
 
-    const hashed = await bcrypt.hash(password, 10);
+    if (teachers.find(t => t.login_id === login_id)) {
+        return res.render("teacher_add", { error: "ログインIDが既に存在します" });
+    }
 
     teachers.push({
         id: Date.now(),
         login_id,
-        name,
-        password: hashed,
+        name
     });
 
     saveTeachers(teachers);
@@ -113,11 +139,27 @@ app.post("/teacher/add", async (req, res) => {
     res.redirect("/teacher/dashboard");
 });
 
-// ログアウト
-app.get("/teacher/logout", (req, res) => {
-    req.session.destroy(() => {
-        res.redirect("/teacher/login");
-    });
+// -------------------------------
+// 教師削除
+// -------------------------------
+app.get("/teacher/delete/:id", requireLogin, (req, res) => {
+    const teachers = loadTeachers();
+    const teacher = teachers.find(t => t.id == req.params.id);
+    res.render("teacher_delete", { teacher });
 });
 
-app.listen(3000, () => console.log("Server running on http://localhost:3000"));
+app.post("/teacher/delete/:id", requireLogin, (req, res) => {
+    let teachers = loadTeachers();
+    teachers = teachers.filter(t => t.id != req.params.id);
+    saveTeachers(teachers);
+
+    res.redirect("/teacher/dashboard");
+});
+
+// -------------------------------
+// サーバー起動
+// -------------------------------
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log("Server running on port " + PORT);
+});
