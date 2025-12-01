@@ -3,12 +3,6 @@
     "id": 1,
     "login_id": "T001",
     "name": "田中先生",
-    "password": "$2b$10$PGSmWgAJV1RcQXJkRDFLKuqgYgWxEs/oKCQt2qdnQyC79GlRTbD.C"
-  },
-  {
-    "id": 2,
-    "login_id": "T002",
-    "name": "佐藤先生",
-    "password": "$2b$10$9TmHzKkUwo4j3.ShpuVYferIiNnIMTS0dCvBzA3s0pSy26.iusCja"
+    "password": "$2b$10$kfzqzAEANt3M9F5nCMVjnOHf4HjrOQk9O7oeEB8mJt7Nc8vSwyHOy"
   }
 ]
