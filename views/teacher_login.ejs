@@ -8,12 +8,15 @@
 </head>
 <body>
 <div class="container">
-<h2>教師ログイン</h2>
-<form action="/teacher/login" method="POST">
-<input type="password" name="password" placeholder="パスワード" required>
-<button type="submit">ログイン</button>
-<% if(error) { %><p class="error"><%= error %></p><% } %>
-</form>
+  <h2>教師ログイン</h2>
+  <% if(error){ %>
+    <p style="color:red"><%= error %></p>
+  <% } %>
+  <form method="POST" action="/teacher/login">
+    <label>パスワード</label>
+    <input type="password" name="password" required>
+    <button type="submit">ログイン</button>
+  </form>
 </div>
 </body>
 </html>
