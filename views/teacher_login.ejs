@@ -5,17 +5,17 @@
     <title>教師ログイン</title>
 </head>
 <body>
-<h2>教師ログイン</h2>
+    <h2>教師ログイン</h2>
 
-<% if (error) { %>
-    <p style="color:red;"><%= error %></p>
-<% } %>
+    <% if (error) { %>
+        <p style="color:red;"><%= error %></p>
+    <% } %>
 
-<form method="post" action="/teacher/login">
-    <label>ID: <input type="text" name="login_id"></label><br>
-    <label>パスワード: <input type="password" name="password"></label><br>
-    <button type="submit">ログイン</button>
-</form>
+    <form action="/teacher/login" method="POST">
+        <label>ログインID</label>
+        <input type="text" name="login_id" required>
 
+        <button type="submit">ログイン</button>
+    </form>
 </body>
 </html>
