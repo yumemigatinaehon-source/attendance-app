@@ -3,20 +3,18 @@ import fs from "fs";
 import path from "path";
 import session from "express-session";
 import bodyParser from "body-parser";
-import nodemailer from "nodemailer";
 import dotenv from "dotenv";
 
 dotenv.config();
-
 const app = express();
 const __dirname = path.resolve();
 
+// ------------------- ミドルウェア -------------------
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, "public")));
-
 app.set("view engine", "ejs");
-app.set("views", path.join(__dirname, "views"));
+app.set("views", path.join(__dirname, "views")));
 
 app.use(
   session({
@@ -27,11 +25,10 @@ app.use(
   })
 );
 
-// ------------------- データファイル -------------------
+// ------------------- データ -------------------
 const TEACHER_FILE = "./data/teachers.json";
 const CSV_FILE = "./data/attendance.csv";
 
-// ------------------- ユーティリティ -------------------
 function loadTeachers() {
   if (!fs.existsSync(TEACHER_FILE)) fs.writeFileSync(TEACHER_FILE, "[]");
   return JSON.parse(fs.readFileSync(TEACHER_FILE, "utf8"));
@@ -42,17 +39,9 @@ function saveTeachers(data) {
 }
 
 function appendCSV(line) {
+  if (!fs.existsSync(CSV_FILE)) fs.writeFileSync(CSV_FILE, "");
   fs.appendFileSync(CSV_FILE, line + "\n");
 }
-
-// ------------------- Nodemailer 設定 -------------------
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS
-  }
-});
 
 // ------------------- 生徒ページ -------------------
 app.get("/", (req, res) => {
@@ -60,7 +49,7 @@ app.get("/", (req, res) => {
   res.render("index", { teachers });
 });
 
-app.post("/submit", async (req, res) => {
+app.post("/submit", (req, res) => {
   const { name, date, type, homeroom, t1, t2, t3, t4, message } = req.body;
 
   const line = [
@@ -77,30 +66,11 @@ app.post("/submit", async (req, res) => {
   ].join(",");
 
   appendCSV(line);
-
-  // メール送信
-  const teachers = loadTeachers();
-  const selectedTeachers = [homeroom, t1, t2, t3, t4]
-    .filter(n => n && n !== "不明")
-    .map(n => teachers.find(t => t.name === n)?.email)
-    .filter(Boolean);
-
-  for (const email of selectedTeachers) {
-    await transporter.sendMail({
-      from: process.env.EMAIL_USER,
-      to: email,
-      subject: `欠席・遅刻連絡 (${date})`,
-      text: `生徒: ${name}\n日付: ${date}\n区分: ${type}\n担任: ${homeroom}\n1限: ${t1}\n2限: ${t2}\n3限: ${t3}\n4限: ${t4}\nメッセージ: ${message}`
-    });
-  }
-
   res.json({ message: "送信しました！" });
 });
 
 // ------------------- 教師ログイン -------------------
-app.get("/teacher/login", (req, res) => {
-  res.render("teacher_login", { error: null });
-});
+app.get("/teacher/login", (req, res) => res.render("teacher_login", { error: null }));
 
 app.post("/teacher/login", (req, res) => {
   const { password } = req.body;
@@ -120,22 +90,29 @@ function requireLogin(req, res, next) {
 // ------------------- 教師ダッシュボード -------------------
 app.get("/teacher/dashboard", requireLogin, (req, res) => {
   const teachers = loadTeachers();
-  let csv = "";
-  if (fs.existsSync(CSV_FILE)) csv = fs.readFileSync(CSV_FILE, "utf8");
-  res.render("teacher_dashboard", { teachers, csv });
+  let csvData = [];
+  if (fs.existsSync(CSV_FILE)) {
+    const lines = fs.readFileSync(CSV_FILE, "utf8").split("\n").filter(l => l);
+    csvData = lines.map(line => {
+      const [timestamp, name, date, type, homeroom, t1, t2, t3, t4, message] = line.split(",");
+      return { timestamp, name, date, type, homeroom, t1, t2, t3, t4, message };
+    });
+  }
+  res.render("teacher_dashboard", { teachers, csvData });
 });
 
 // 教師追加
 app.get("/teacher/add", requireLogin, (req, res) => res.render("teacher_add", { error: null }));
 app.post("/teacher/add", requireLogin, (req, res) => {
-  const { name, email } = req.body;
+  const { name } = req.body;
   const teachers = loadTeachers();
   if (teachers.find(t => t.name === name)) return res.render("teacher_add", { error: "既に存在します" });
-  teachers.push({ id: Date.now(), name, email });
+  teachers.push({ id: Date.now(), name });
   saveTeachers(teachers);
   res.redirect("/teacher/dashboard");
 });
 
+// 教師削除
 app.get("/teacher/delete/:id", requireLogin, (req, res) => {
   let teachers = loadTeachers();
   teachers = teachers.filter(t => t.id != req.params.id);
