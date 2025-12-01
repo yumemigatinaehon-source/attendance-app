@@ -1,26 +1,40 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>教師ダッシュボード</title>
-<link rel="stylesheet" href="/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>教師ダッシュボード</title>
+  <link rel="stylesheet" href="/style.css">
 </head>
 <body>
 <%- include("partials/header") %>
 <div class="container">
-<h2>教師ダッシュボード</h2>
-<a href="/teacher/add" class="btn">教師追加</a>
+  <h2>教師ダッシュボード</h2>
+  
+  <h3>教師一覧</h3>
+  <ul>
+    <% teachers.forEach(t => { %>
+      <li><%= t.name %></li>
+    <% }) %>
+  </ul>
+  <a href="/teacher/add" class="btn">教師を追加</a>
 
-<h3>教師一覧</h3>
-<ul>
-<% teachers.forEach(t => { %>
-<li><%= t.name %> (<%= t.email %>) <a href="/teacher/delete/<%= t.id %>">削除</a></li>
-<% }) %>
-</ul>
-
-<h3>欠席・遅刻者連絡</h3>
-<pre><%= csv %></pre>
+  <h3>欠席・遅刻者連絡</h3>
+  <div class="cards">
+    <% csvData.forEach(d => { %>
+      <div class="card">
+        <p><strong>名前:</strong> <%= d.name %></p>
+        <p><strong>日付:</strong> <%= d.date %></p>
+        <p><strong>区分:</strong> <%= d.type %></p>
+        <p><strong>担任:</strong> <%= d.homeroom %></p>
+        <p><strong>1限:</strong> <%= d.t1 %></p>
+        <p><strong>2限:</strong> <%= d.t2 %></p>
+        <p><strong>3限:</strong> <%= d.t3 %></p>
+        <p><strong>4限:</strong> <%= d.t4 %></p>
+        <p><strong>メッセージ:</strong> <%= d.message %></p>
+      </div>
+    <% }) %>
+  </div>
 </div>
 <%- include("partials/footer") %>
 </body>
