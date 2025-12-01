@@ -1,49 +1,49 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>欠席・遅刻連絡フォーム</title>
-<link rel="stylesheet" href="/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>出席入力フォーム</title>
+  <link rel="stylesheet" href="/style.css">
 </head>
 <body>
 <%- include("partials/header") %>
 <div class="container">
-<h2>欠席・遅刻連絡フォーム</h2>
-<form id="form">
-<label>名前</label>
-<input type="text" id="name" required>
+  <h2>欠席・遅刻入力フォーム</h2>
+  <form id="form">
+    <label>名前</label>
+    <input type="text" id="name" required>
+    
+    <label>日付</label>
+    <input type="date" id="date" required>
+    
+    <label>区分</label>
+    <label><input type="radio" name="type" value="欠席" checked>欠席</label>
+    <label><input type="radio" name="type" value="遅刻">遅刻</label>
+    
+    <label>担任の先生</label>
+    <select id="homeroom">
+      <option>不明</option>
+      <% teachers.forEach(t => { %>
+      <option><%= t.name %></option>
+      <% }) %>
+    </select>
 
-<label>日付</label>
-<input type="date" id="date" required>
+    <% for(let i=1;i<=4;i++){ %>
+    <label><%= i %>限目の先生</label>
+    <select id="t<%= i %>">
+      <option>不明</option>
+      <% teachers.forEach(t => { %>
+      <option><%= t.name %></option>
+      <% }) %>
+    </select>
+    <% } %>
 
-<label>区分</label>
-<div>
-  <input type="radio" name="type" value="欠席" checked>欠席
-  <input type="radio" name="type" value="遅刻">遅刻
-</div>
-
-<label>担任の先生</label>
-<select id="homeroom">
-  <option>不明</option>
-  <% teachers.forEach(t => { %><option><%= t.name %></option><% }) %>
-</select>
-
-<label>1限</label>
-<select id="t1"><option>不明</option><% teachers.forEach(t => { %><option><%= t.name %></option><% }) %></select>
-<label>2限</label>
-<select id="t2"><option>不明</option><% teachers.forEach(t => { %><option><%= t.name %></option><% }) %></select>
-<label>3限</label>
-<select id="t3"><option>不明</option><% teachers.forEach(t => { %><option><%= t.name %></option><% }) %></select>
-<label>4限</label>
-<select id="t4"><option>不明</option><% teachers.forEach(t => { %><option><%= t.name %></option><% }) %></select>
-
-<label>メッセージ</label>
-<textarea id="message"></textarea>
-
-<button type="submit">送信</button>
-</form>
-<p id="msg"></p>
+    <label>メッセージ</label>
+    <textarea id="message"></textarea>
+    <button type="submit">送信</button>
+  </form>
+  <p id="msg"></p>
 </div>
 <%- include("partials/footer") %>
 <script src="/script.js"></script>
