@@ -1,4 +1,4 @@
-document.getElementById("form")?.addEventListener("submit", async e => {
+document.getElementById("form").addEventListener("submit", async e => {
   e.preventDefault();
   const payload = {
     name: document.getElementById("name").value,
@@ -11,6 +11,7 @@ document.getElementById("form")?.addEventListener("submit", async e => {
     t4: document.getElementById("t4").value,
     message: document.getElementById("message").value
   };
+
   const res = await fetch("/submit", {
     method:"POST",
     headers:{"Content-Type":"application/json"},
@@ -18,4 +19,5 @@ document.getElementById("form")?.addEventListener("submit", async e => {
   });
   const data = await res.json();
   document.getElementById("msg").innerText = data.message;
+  document.getElementById("form").reset();
 });
