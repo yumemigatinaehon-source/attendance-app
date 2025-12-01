@@ -1,4 +1,12 @@
 [
-    { "id": 1, "login_id": "T001", "name": "田中先生" },
-    { "id": 2, "login_id": "T002", "name": "佐藤先生" }
+  {
+    "id": 1,
+    "name": "田中先生",
+    "email": "tanaka@example.com"
+  },
+  {
+    "id": 2,
+    "name": "佐藤先生",
+    "email": "sato@example.com"
+  }
 ]
