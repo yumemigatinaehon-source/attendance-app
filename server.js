@@ -9,12 +9,12 @@ dotenv.config();
 const app = express();
 const __dirname = path.resolve();
 
-// ------------------- ミドルウェア -------------------
+// ミドルウェア
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, "public")));
 app.set("view engine", "ejs");
-app.set("views", path.join(__dirname, "views")));
+app.set("views", path.join(__dirname, "views"));
 
 app.use(
   session({
@@ -25,7 +25,7 @@ app.use(
   })
 );
 
-// ------------------- データ -------------------
+// データ
 const TEACHER_FILE = "./data/teachers.json";
 const CSV_FILE = "./data/attendance.csv";
 
@@ -43,7 +43,7 @@ function appendCSV(line) {
   fs.appendFileSync(CSV_FILE, line + "\n");
 }
 
-// ------------------- 生徒ページ -------------------
+// 生徒ページ
 app.get("/", (req, res) => {
   const teachers = loadTeachers();
   res.render("index", { teachers });
@@ -69,7 +69,7 @@ app.post("/submit", (req, res) => {
   res.json({ message: "送信しました！" });
 });
 
-// ------------------- 教師ログイン -------------------
+// 教師ログイン
 app.get("/teacher/login", (req, res) => res.render("teacher_login", { error: null }));
 
 app.post("/teacher/login", (req, res) => {
@@ -87,7 +87,7 @@ function requireLogin(req, res, next) {
   next();
 }
 
-// ------------------- 教師ダッシュボード -------------------
+// 教師ダッシュボード
 app.get("/teacher/dashboard", requireLogin, (req, res) => {
   const teachers = loadTeachers();
   let csvData = [];
@@ -120,6 +120,6 @@ app.get("/teacher/delete/:id", requireLogin, (req, res) => {
   res.redirect("/teacher/dashboard");
 });
 
-// ------------------- サーバー -------------------
+// サーバー
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
