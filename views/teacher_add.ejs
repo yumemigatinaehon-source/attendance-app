@@ -1,12 +1,22 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>教師追加</title>
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
 <div class="container">
-<h2>教師追加</h2>
-<form action="/teacher/add" method="POST">
-<label>名前</label>
-<input type="text" name="name" required>
-<label>メール</label>
-<input type="email" name="email" required>
-<button type="submit">追加</button>
-</form>
-<% if(error){ %><p class="error"><%= error %></p><% } %>
-<a href="/teacher/dashboard">ダッシュボードに戻る</a>
+  <h2>教師追加</h2>
+  <% if(error){ %>
+    <p style="color:red"><%= error %></p>
+  <% } %>
+  <form method="POST" action="/teacher/add">
+    <label>教師名</label>
+    <input type="text" name="name" required>
+    <button type="submit">追加</button>
+  </form>
 </div>
+</body>
+</html>
