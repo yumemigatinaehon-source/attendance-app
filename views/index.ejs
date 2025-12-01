@@ -1,71 +1,51 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <title>生徒入力ページ</title>
-    <link rel="stylesheet" href="/style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>欠席・遅刻連絡フォーム</title>
+<link rel="stylesheet" href="/style.css">
 </head>
 <body>
-
+<%- include("partials/header") %>
 <div class="container">
-    <h2>生徒出席フォーム</h2>
+<h2>欠席・遅刻連絡フォーム</h2>
+<form id="form">
+<label>名前</label>
+<input type="text" id="name" required>
 
-    <form id="studentForm">
-        <label>名前</label>
-        <input type="text" id="name" required>
+<label>日付</label>
+<input type="date" id="date" required>
 
-        <label>学籍番号</label>
-        <input type="text" id="studentId" required>
-
-        <label>日付</label>
-        <input type="date" id="date" required>
-
-        <label>出席状況</label>
-        <select id="status">
-            <option value="出席">出席</option>
-            <option value="欠席">欠席</option>
-            <option value="遅刻">遅刻</option>
-        </select>
-
-        <label>担任</label>
-        <select id="teacher">
-            <% teachers.forEach(t => { %>
-                <option value="<%= t.name %>"><%= t.name %></option>
-            <% }) %>
-        </select>
-
-        <label>理由</label>
-        <textarea id="reason"></textarea>
-
-        <button type="submit">送信</button>
-    </form>
-
-    <p id="msg"></p>
+<label>区分</label>
+<div>
+  <input type="radio" name="type" value="欠席" checked>欠席
+  <input type="radio" name="type" value="遅刻">遅刻
 </div>
 
-<script>
-document.getElementById("studentForm").addEventListener("submit", async e => {
-    e.preventDefault();
+<label>担任の先生</label>
+<select id="homeroom">
+  <option>不明</option>
+  <% teachers.forEach(t => { %><option><%= t.name %></option><% }) %>
+</select>
 
-    const data = {
-        name: name.value,
-        studentId: studentId.value,
-        date: date.value,
-        status: status.value,
-        reason: reason.value,
-        teacher: teacher.value
-    };
+<label>1限</label>
+<select id="t1"><option>不明</option><% teachers.forEach(t => { %><option><%= t.name %></option><% }) %></select>
+<label>2限</label>
+<select id="t2"><option>不明</option><% teachers.forEach(t => { %><option><%= t.name %></option><% }) %></select>
+<label>3限</label>
+<select id="t3"><option>不明</option><% teachers.forEach(t => { %><option><%= t.name %></option><% }) %></select>
+<label>4限</label>
+<select id="t4"><option>不明</option><% teachers.forEach(t => { %><option><%= t.name %></option><% }) %></select>
 
-    const res = await fetch("/submit", {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify(data)
-    });
+<label>メッセージ</label>
+<textarea id="message"></textarea>
 
-    const json = await res.json();
-    msg.innerText = json.message;
-});
-</script>
-
+<button type="submit">送信</button>
+</form>
+<p id="msg"></p>
+</div>
+<%- include("partials/footer") %>
+<script src="/script.js"></script>
 </body>
 </html>
