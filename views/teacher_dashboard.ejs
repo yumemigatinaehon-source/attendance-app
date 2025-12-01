@@ -2,21 +2,16 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>教師ダッシュボード</title>
+    <title>ダッシュボード</title>
 </head>
 <body>
+    <h2>教師ダッシュボード</h2>
 
-<h2>ようこそ <%= teacher.name %> さん</h2>
+    <p><%= teacher.name %>（ID: <%= teacher.login_id %>）でログイン中</p>
 
-<h3>教師一覧</h3>
-<ul>
-    <% teachers.forEach(t => { %>
-        <li><%= t.name %>（ID: <%= t.login_id %>）</li>
-    <% }) %>
-</ul>
-
-<a href="/teacher/add">教師を追加</a><br>
-<a href="/teacher/logout">ログアウト</a>
-
+    <ul>
+        <li><a href="/teacher/add">教師追加</a></li>
+        <li><a href="/teacher/delete/<%= teacher.id %>">自分を削除</a></li>
+    </ul>
 </body>
 </html>
