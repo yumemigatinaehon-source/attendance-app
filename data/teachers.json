@@ -1,8 +1,4 @@
 [
-  {
-    "id": 1,
-    "login_id": "T001",
-    "name": "田中先生",
-    "password": "$2b$10$PGSmWgAJV1RcQXJkRDFLKuqgYgWxEs/oKCQt2qdnQyC79GlRTbD.C"
-  }
+    { "id": 1, "login_id": "T001", "name": "田中先生" },
+    { "id": 2, "login_id": "T002", "name": "佐藤先生" }
 ]
