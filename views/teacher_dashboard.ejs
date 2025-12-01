@@ -15,14 +15,11 @@
     <h3>教師一覧</h3>
     <ul>
         <% teachers.forEach(t => { %>
-            <li><%= t.name %>（<%= t.email %>）</li>
+            <li><%= t.name %>（ID: <%= t.login_id %>）</li>
         <% }) %>
     </ul>
 
     <a href="/teacher/add" class="btn">教師を追加</a><br>
-    <a href="/teacher/edit" class="btn">メール変更</a><br>
-    <a href="/teacher/delete" class="btn">教師を削除</a><br>
-
 </div>
 
 <%- include("partials/footer") %>
