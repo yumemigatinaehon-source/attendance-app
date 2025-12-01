@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>教師ダッシュボード</title>
-  <link rel="stylesheet" href="/style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>教師ダッシュボード</title>
+<link rel="stylesheet" href="/style.css">
 </head>
 <body>
 <%- include("partials/header") %>
@@ -14,7 +14,7 @@
   <h3>教師一覧</h3>
   <ul>
     <% teachers.forEach(t => { %>
-      <li><%= t.name %></li>
+      <li><%= t.name %> <a href="/teacher/delete/<%= t.id %>" style="color:red">削除</a></li>
     <% }) %>
   </ul>
   <a href="/teacher/add" class="btn">教師を追加</a>
