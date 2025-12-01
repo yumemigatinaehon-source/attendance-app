@@ -1,17 +1,5 @@
 [
-  {
-    "id": 1,
-    "name": "田中先生",
-    "email": "tanaka@example.com"
-  },
-  {
-    "id": 2,
-    "name": "佐藤先生",
-    "email": "sato@example.com"
-  },
-  {
-    "id": 3,
-    "name": "江本先生",
-    "email": "sagadantaagadanta@gmail.com"
-  }
+  { "id": 1, "name": "田中先生" },
+  { "id": 2, "name": "佐藤先生" },
+  { "id": 3, "name": "江本先生" }
 ]
