@@ -3,26 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <title>教師ダッシュボード</title>
-    <link rel="stylesheet" href="/style.css">
 </head>
 <body>
 
-<%- include("partials/header") %>
+<h2>ようこそ <%= teacher.name %> さん</h2>
 
-<div class="container">
-    <h2>教師ダッシュボード</h2>
+<h3>教師一覧</h3>
+<ul>
+    <% teachers.forEach(t => { %>
+        <li><%= t.name %>（ID: <%= t.login_id %>）</li>
+    <% }) %>
+</ul>
 
-    <h3>教師一覧</h3>
-    <ul>
-        <% teachers.forEach(t => { %>
-            <li><%= t.name %>（ID: <%= t.login_id %>）</li>
-        <% }) %>
-    </ul>
-
-    <a href="/teacher/add" class="btn">教師を追加</a><br>
-</div>
-
-<%- include("partials/footer") %>
+<a href="/teacher/add">教師を追加</a><br>
+<a href="/teacher/logout">ログアウト</a>
 
 </body>
 </html>
