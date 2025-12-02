@@ -1,9 +1,12 @@
-document.getElementById("form").addEventListener("submit", async e => {
+document.getElementById("form").addEventListener("submit", async (e) => {
   e.preventDefault();
+
+  const type = document.querySelector('input[name="type"]:checked').value;
+
   const payload = {
     name: document.getElementById("name").value,
     date: document.getElementById("date").value,
-    type: document.querySelector('input[name="type"]:checked').value,
+    type,
     homeroom: document.getElementById("homeroom").value,
     t1: document.getElementById("t1").value,
     t2: document.getElementById("t2").value,
@@ -13,11 +16,11 @@ document.getElementById("form").addEventListener("submit", async e => {
   };
 
   const res = await fetch("/submit", {
-    method:"POST",
-    headers:{"Content-Type":"application/json"},
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload)
   });
+
   const data = await res.json();
   document.getElementById("msg").innerText = data.message;
-  document.getElementById("form").reset();
 });
