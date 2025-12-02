@@ -1,40 +1,45 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>教師ダッシュボード</title>
-<link rel="stylesheet" href="/style.css">
+  <meta charset="UTF-8">
+  <title>教師ダッシュボード</title>
+  <link rel="stylesheet" href="/style.css">
 </head>
 <body>
 <%- include("partials/header") %>
 <div class="container">
   <h2>教師ダッシュボード</h2>
-  
+
   <h3>教師一覧</h3>
   <ul>
     <% teachers.forEach(t => { %>
-      <li><%= t.name %> <a href="/teacher/delete/<%= t.id %>" style="color:red">削除</a></li>
+      <li>
+        <%= t.name %>
+        [<a href="/teacher/edit/<%= t.id %>">編集</a>]
+        [<a href="/teacher/delete/<%= t.id %>">削除</a>]
+      </li>
     <% }) %>
   </ul>
   <a href="/teacher/add" class="btn">教師を追加</a>
 
-  <h3>欠席・遅刻者連絡</h3>
-  <div class="cards">
-    <% csvData.forEach(d => { %>
-      <div class="card">
-        <p><strong>名前:</strong> <%= d.name %></p>
-        <p><strong>日付:</strong> <%= d.date %></p>
-        <p><strong>区分:</strong> <%= d.type %></p>
-        <p><strong>担任:</strong> <%= d.homeroom %></p>
-        <p><strong>1限:</strong> <%= d.t1 %></p>
-        <p><strong>2限:</strong> <%= d.t2 %></p>
-        <p><strong>3限:</strong> <%= d.t3 %></p>
-        <p><strong>4限:</strong> <%= d.t4 %></p>
-        <p><strong>メッセージ:</strong> <%= d.message %></p>
-      </div>
-    <% }) %>
-  </div>
+  <h3>欠席・遅刻者一覧</h3>
+  <% if(csv){ 
+       const lines = csv.split("\n").filter(l=>l);
+       lines.forEach(line => { 
+         const d = line.split(",");
+  %>
+    <div class="attendance-card">
+      <p><strong>名前:</strong> <%= d[1] %></p>
+      <p><strong>日付:</strong> <%= d[2] %></p>
+      <p><strong>区分:</strong> <%= d[3] %></p>
+      <p><strong>担任:</strong> <%= d[4] %></p>
+      <p><strong>1限:</strong> <%= d[5] %></p>
+      <p><strong>2限:</strong> <%= d[6] %></p>
+      <p><strong>3限:</strong> <%= d[7] %></p>
+      <p><strong>4限:</strong> <%= d[8] %></p>
+      <p><strong>メッセージ:</strong> <%= d[9] %></p>
+    </div>
+  <% }) } %>
 </div>
 <%- include("partials/footer") %>
 </body>
