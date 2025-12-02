@@ -1,22 +1,23 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>教師追加</title>
-<link rel="stylesheet" href="/style.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>教師追加</title>
+  <link rel="stylesheet" href="/style.css" />
 </head>
 <body>
-<div class="container">
-  <h2>教師追加</h2>
-  <% if(error){ %>
-    <p style="color:red"><%= error %></p>
-  <% } %>
-  <form method="POST" action="/teacher/add">
-    <label>教師名</label>
-    <input type="text" name="name" required>
-    <button type="submit">追加</button>
-  </form>
-</div>
+  <%- include("partials/header") %>
+  <div class="container">
+    <h2>教師追加</h2>
+    <% if (error) { %><p style="color:red;"><%= error %></p><% } %>
+    <form method="POST" action="/teacher/add">
+      <label>教師名</label>
+      <input type="text" name="name" required />
+      <button type="submit" class="primary">追加</button>
+    </form>
+    <p><a href="/teacher/dashboard" class="link">ダッシュボードに戻る</a></p>
+  </div>
+  <%- include("partials/footer") %>
 </body>
 </html>
