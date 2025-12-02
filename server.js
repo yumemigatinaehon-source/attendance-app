@@ -223,4 +223,5 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   // also clean at startup
   removePastNotices();
-  console.log(`Server running o
+  console.log(`Server running on port ${PORT}`);
+});
