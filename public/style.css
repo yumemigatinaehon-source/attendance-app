@@ -1,43 +1,51 @@
-body {
-  font-family: Arial, sans-serif;
-  background: #f2f2f2;
-  margin: 0;
-}
+/* basic reset */
+* { box-sizing: border-box; }
+body { font-family: "Helvetica Neue", Arial, sans-serif; background:#f2f6fb; margin:0; color:#222; }
 
-.container {
-  width: 95%;
-  max-width: 600px;
-  margin: 10px auto;
-  background: #fff;
-  padding: 15px;
-  border-radius: 10px;
-}
+/* container */
+.container { width:95%; max-width:720px; margin:14px auto; background:#fff; padding:14px; border-radius:12px; box-shadow:0 6px 18px rgba(15,30,60,0.06); }
 
-label {
-  display: block;
-  margin-top: 10px;
-  font-weight: bold;
-}
+/* headings */
+h1,h2,h3 { margin:0 0 12px 0; }
+h2 { font-size:20px; }
 
-input, select, textarea, button {
-  width: 100%;
-  padding: 8px;
-  margin-top: 4px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
+/* form */
+label { display:block; margin-top:10px; font-weight:600; font-size:14px; }
+input[type="text"], input[type="date"], input[type="password"], select, textarea {
+  width:100%; padding:10px; margin-top:6px; border-radius:8px; border:1px solid #d6dbe6; font-size:15px;
 }
+textarea { resize:vertical; min-height:72px; }
 
-button {
-  margin-top: 15px;
-  background-color: #007BFF;
-  color: white;
-  border: none;
+/* buttons */
+button, .btn {
+  display:inline-block; padding:10px 14px; border-radius:10px; text-decoration:none; text-align:center; cursor:pointer;
 }
+.primary { background:#0b71eb; color:#fff; border:none; }
+.btn { background:#0b71eb; color:#fff; }
+.btn.small { padding:6px 10px; font-size:13px; border-radius:8px; margin-left:6px; }
+.ghost { background:transparent; color:#0b71eb; border:1px solid #dbe9ff; }
+.danger { background:#e24b4b; color:#fff; border:none; }
 
-.attendance-card {
-  border: 1px solid #007BFF;
-  border-radius: 8px;
-  padding: 10px;
-  margin-bottom: 10px;
-  background: #e7f0ff;
+/* inline */
+.row { display:flex; gap:8px; align-items:center; }
+.inline { display:inline-block; margin-right:10px; }
+
+/* teacher list */
+.teacher-list { list-style:none; padding:0; margin:10px 0; }
+.teacher-list li { display:flex; justify-content:space-between; padding:8px 10px; border-radius:8px; background:#fafafa; margin-bottom:6px; border:1px solid #efefef; }
+.link-del { color:#e24b4b; text-decoration:none; }
+
+/* cards area */
+.cards { margin-top:12px; display:flex; flex-direction:column; gap:12px; }
+.card.attendance { padding:12px; border-radius:10px; background:linear-gradient(180deg,#fff,#f7fbff); border:1px solid #dfeeff; box-shadow:0 3px 8px rgba(10,40,80,0.04); }
+.card-head { display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
+.card-head .big { font-size:18px; font-weight:700; }
+.card-head .small { font-size:13px; color:#666; margin-left:6px; }
+.card-body p { margin:6px 0; font-size:14px; }
+.muted { color:#777; font-size:12px; margin-top:8px; }
+
+/* responsive tweaks */
+@media (max-width:420px) {
+  .container { padding:12px; }
+  .card-head .big { font-size:16px; }
 }
