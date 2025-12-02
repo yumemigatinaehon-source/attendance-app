@@ -1,11 +1,43 @@
-body { font-family: Arial; background: #f2f2f2; margin:0; padding:0; }
-.container { width: 90%; max-width: 600px; margin: 20px auto; background:white; padding:20px; border-radius:10px; }
-label { display:block; margin-top:10px; font-weight:bold; }
-input, select, textarea, button { width:100%; padding:8px; margin-top:4px; border-radius:5px; border:1px solid #ccc; }
-button { background:#4CAF50; color:white; border:none; cursor:pointer; margin-top:10px; }
-button:hover { background:#45a049; }
+body {
+  font-family: Arial, sans-serif;
+  background: #f2f2f2;
+  margin: 0;
+}
 
-/* カード表示 */
-.cards { display:flex; flex-direction: column; gap:10px; margin-top:20px; }
-.card { background:#fff; padding:15px; border-radius:10px; border:1px solid #ccc; box-shadow:0 2px 4px rgba(0,0,0,0.1); }
-.card p { margin:5px 0; font-size:14px; }
+.container {
+  width: 95%;
+  max-width: 600px;
+  margin: 10px auto;
+  background: #fff;
+  padding: 15px;
+  border-radius: 10px;
+}
+
+label {
+  display: block;
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+input, select, textarea, button {
+  width: 100%;
+  padding: 8px;
+  margin-top: 4px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+button {
+  margin-top: 15px;
+  background-color: #007BFF;
+  color: white;
+  border: none;
+}
+
+.attendance-card {
+  border: 1px solid #007BFF;
+  border-radius: 8px;
+  padding: 10px;
+  margin-bottom: 10px;
+  background: #e7f0ff;
+}
