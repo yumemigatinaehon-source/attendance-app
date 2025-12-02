@@ -1,51 +1,59 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <title>出席入力フォーム</title>
-  <link rel="stylesheet" href="/style.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>出席・遅刻入力</title>
+  <link rel="stylesheet" href="/style.css" />
 </head>
 <body>
-<%- include("partials/header") %>
-<div class="container">
-  <h2>欠席・遅刻入力フォーム</h2>
-  <form id="form">
-    <label>名前</label>
-    <input type="text" id="name" required>
+  <%- include("partials/header") %>
 
-    <label>日付</label>
-    <input type="date" id="date" required>
+  <div class="container">
+    <h2>欠席・遅刻入力フォーム</h2>
 
-    <label>区分</label>
-    <input type="radio" name="type" value="欠席" checked>欠席
-    <input type="radio" name="type" value="遅刻">遅刻
+    <form id="form">
+      <label>出席番号</label>
+      <input type="text" id="number" placeholder="例: 12" />
 
-    <label>担任の先生</label>
-    <select id="homeroom">
-      <% teachers.forEach(t => { %>
-        <option value="<%= t.name %>"><%= t.name %></option>
-      <% }) %>
-      <option value="不明">不明</option>
-    </select>
+      <label>名前</label>
+      <input type="text" id="name" placeholder="山田 太郎" required />
 
-    <% for(let i=1;i<=4;i++){ %>
-      <label><%= i %>限の先生</label>
-      <select id="t<%= i %>">
+      <label>日付</label>
+      <input type="date" id="date" required />
+
+      <label>区分</label>
+      <div class="row">
+        <label class="inline"><input type="radio" name="type" value="欠席" checked /> 欠席</label>
+        <label class="inline"><input type="radio" name="type" value="遅刻" /> 遅刻</label>
+      </div>
+
+      <label>担任の先生</label>
+      <select id="homeroom">
         <% teachers.forEach(t => { %>
           <option value="<%= t.name %>"><%= t.name %></option>
         <% }) %>
-        <option value="不明">不明</option>
       </select>
-    <% } %>
 
-    <label>メッセージ</label>
-    <textarea id="message"></textarea>
+      <% for (let i=1;i<=4;i++) { %>
+        <label><%= i %>限の先生</label>
+        <select id="t<%= i %>">
+          <% teachers.forEach(t => { %>
+            <option value="<%= t.name %>"><%= t.name %></option>
+          <% }) %>
+        </select>
+      <% } %>
 
-    <button type="submit">送信</button>
-  </form>
-  <p id="msg"></p>
-</div>
-<%- include("partials/footer") %>
-<script src="/script.js"></script>
+      <label>メッセージ（任意）</label>
+      <textarea id="message" rows="3" placeholder="理由など"></textarea>
+
+      <button type="submit" class="primary">送信</button>
+    </form>
+
+    <p id="msg" style="text-align:center;margin-top:10px;color:green;"></p>
+  </div>
+
+  <%- include("partials/footer") %>
+  <script src="/script.js"></script>
 </body>
 </html>
