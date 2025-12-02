@@ -1,46 +1,65 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>教師ダッシュボード</title>
-  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/style.css" />
 </head>
 <body>
-<%- include("partials/header") %>
-<div class="container">
-  <h2>教師ダッシュボード</h2>
+  <%- include("partials/header") %>
 
-  <h3>教師一覧</h3>
-  <ul>
-    <% teachers.forEach(t => { %>
-      <li>
-        <%= t.name %>
-        [<a href="/teacher/edit/<%= t.id %>">編集</a>]
-        [<a href="/teacher/delete/<%= t.id %>">削除</a>]
-      </li>
-    <% }) %>
-  </ul>
-  <a href="/teacher/add" class="btn">教師を追加</a>
-
-  <h3>欠席・遅刻者一覧</h3>
-  <% if(csv){ 
-       const lines = csv.split("\n").filter(l=>l);
-       lines.forEach(line => { 
-         const d = line.split(",");
-  %>
-    <div class="attendance-card">
-      <p><strong>名前:</strong> <%= d[1] %></p>
-      <p><strong>日付:</strong> <%= d[2] %></p>
-      <p><strong>区分:</strong> <%= d[3] %></p>
-      <p><strong>担任:</strong> <%= d[4] %></p>
-      <p><strong>1限:</strong> <%= d[5] %></p>
-      <p><strong>2限:</strong> <%= d[6] %></p>
-      <p><strong>3限:</strong> <%= d[7] %></p>
-      <p><strong>4限:</strong> <%= d[8] %></p>
-      <p><strong>メッセージ:</strong> <%= d[9] %></p>
+  <div class="container">
+    <div style="display:flex;gap:10px;justify-content:space-between;align-items:center;">
+      <h2>教師ダッシュボード</h2>
+      <div>
+        <a href="/teacher/attendance.csv" class="btn small">CSV (生データ)</a>
+        <a href="/teacher/logout" class="btn small ghost">ログアウト</a>
+      </div>
     </div>
-  <% }) } %>
-</div>
-<%- include("partials/footer") %>
+
+    <section>
+      <h3>教師一覧</h3>
+      <ul class="teacher-list">
+        <% teachers.forEach(t => { %>
+          <li>
+            <span><%= t.name %></span>
+            <a href="/teacher/delete/<%= t.id %>" class="link-del">削除</a>
+          </li>
+        <% }) %>
+      </ul>
+      <p><a href="/teacher/add" class="btn">教師を追加</a></p>
+    </section>
+
+    <section>
+      <h3>欠席・遅刻者一覧</h3>
+      <% if (notices.length === 0) { %>
+        <p>現在、表示する連絡はありません。</p>
+      <% } %>
+
+      <div class="cards">
+        <% notices.forEach(n => { %>
+          <div class="card attendance">
+            <div class="card-head">
+              <div class="big"><%= n.name %> <span class="small">（No.<%= n.number || '-' %>）</span></div>
+              <div class="date"><%= n.date %> • <%= n.type %></div>
+            </div>
+
+            <div class="card-body">
+              <p><strong>担任:</strong> <%= n.homeroom %></p>
+              <p><strong>1限:</strong> <%= n.t1 %>　<strong>2限:</strong> <%= n.t2 %></p>
+              <p><strong>3限:</strong> <%= n.t3 %>　<strong>4限:</strong> <%= n.t4 %></p>
+              <% if (n.message) { %>
+                <p><strong>メッセージ:</strong> <%= n.message %></p>
+              <% } %>
+              <p class="muted">送信時間: <%= n.timestamp %></p>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+    </section>
+  </div>
+
+  <%- include("partials/footer") %>
 </body>
 </html>
